@@ -62,7 +62,7 @@ periods. Calculate the difference between the VEP turnout rate and the ANES
 turnout rate separately for each year within each period. Has the bias of ANES
 increased over time?
 ```{r}
- <- c(seq(from = [number], to = [where we want to end], by = [number we want to skip]
+
 ```
 
 6. ANES does not interview prisoners and overseas voters. Calculate an adjustment
