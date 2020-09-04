@@ -13,12 +13,10 @@ dim(turnout)
 (turnout)
 year <- turnout$year
 max(year) - min(year)
-table(turnout)
+
 ```
 
 2. Calculate the turnout rate based on the voting age population or VAP. Note that for this data set, we must add the total number of eligible overseas voters since the VAP variable does not include these individuals in the count. Next, calculate the turnout rate using the voting eligible population or VEP. What difference do you observe?
-
-The difference most observed is the couple-percentage point difference between the VAP and VEP turnout rate. However, the difference seems to be slowly increasing over time, perhaps representing an increase in inelgible voters.
 ```{r}
 VAPtr <- turnout$total / (turnout$VAP + turnout$overseas) * 100
 VAPtr
@@ -29,8 +27,6 @@ difVEP
 ```
 
 3. Compute the differences between the VAP and ANES estimates of turnout rate. How big is the difference on average? What is the range of the differences? Conduct the same comparison for the VEP and ANES estimates of voter turnout. Briefly comment on the results.
-
-The difference between the average difference between VAP and ANES is higher than the difference between VEP and ANES. This difference between the numbers is higher in the VAP sections, simply due to having a higher population. However, the gap between VEP and ANES is due to the social desireability bias, where people will lie on surveys to make themselves seem better than they are.
 ```{r}
 difVAPANES <- turnout$ANES - VAPtr
 difVAPANES
@@ -43,8 +39,6 @@ cat("Mean VEP: ", mean(difVEPANES), "\n")
 cat("Range VEP and ANES Differences: ", range(difVEPANES), "\n")
 ```
 4. Compare the VEP turnout rate with the ANES turnout rate separately for presidential elections and midterm elections. Note that the data set exclude 5. Divide the data into half by election years such that you subset the data into two periods. Calculate the difference between the VEP turnout rate and the ANES turnout rate separately for each year within each period. Has the bias of ANES increased over time?
-
-The bias has not seemed to meaningfully increase over time.
 ```{r}
 turnout$VEPrate <- VEPtr
 turnout$difs <- VEPtr - turnout$ANES
@@ -56,8 +50,6 @@ Mid
 ```
 
 6. ANES does not interview prisoners and overseas voters. Calculate an adjustment to the 2008 VAP turnout rate. Begin by subtracting the total number of ineligible felons and non-citizens from the VAP to calculate an adjusted VAP. Next, calculate an adjusted VAP turnout rate, taking care to subtract the number of overseas ballots counted from the total ballots in 2008. Compare the adjusted VAP turnout with the un-adjusted VAP, VEP, and the ANES turnout rate. Briefly discuss the results.
-
-It is obvious that social selectability bias is present, hence the large difference between the adjusted VAP rate compared to the ANES. However, we also find that ineligible (felons and non-citizens) make up a significant portion of the voting-age population (7.3%). However, we find that the percentage of the VEP rate is also a little less than the adjusted rate (1.47%), perhaps due to the overseas numbers bolstering the losses from non-citizens and felons.
 ```{r}
 adjVAP <- turnout$VAP - (turnout$felons + turnout$noncit)
 turnout$VAPrate <- VAPtr
@@ -65,7 +57,6 @@ turnout$adjVAPrate <- ((turnout$total / turnout$adjVAP) * 100)
 obama <- turnout[14,]
 obama
 
-cat("Adjusted VAP:", obama$adjVAPrate, "\n")
 cat("ANES Difference:", obama$ANES - obama$adjVAPrate, "\n")
 cat("VAP Difference:", obama$VAPrate - obama$adjVAPrate, "\n")
 cat("VEP Difference:", obama$VEPrate - obama$adjVAPrate)
