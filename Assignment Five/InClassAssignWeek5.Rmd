@@ -91,9 +91,32 @@ boxplot(sec_school ~ region, data = domvio,
 An important point of the researcher's hypothesis is that the support towards intimate partner violence should *decrease* over time, as more women across regions have access to formal schooling and exposure to mass media. To test this idea, using time-series plots, examine the trends in `beat_burnfood` from 1999-2014 *within each region*. Thinking about the study design, what should we consider before trusting that this plot shows a change over time in attitudes?  
 
 ## Answer 4
-
+I think that the things that lead to decreases in attitudes towards domestic violence take a long time to percolate through a population, so the 15 years is not enough time to see meaningful change. Additionally, there is some social desireability bias in the data - internal thoughts may not be as truthfully said as education increases and respondents know they are in the wrong.
 ```{r}
-ggplot(domvio, aes(year, beat_burnfood)) + geom_line(aes(color = "#00AFBB"), size = 1)
+
+asia <- subset(domvio, region == "Asia")
+lam <- subset(domvio, region == "Latin America")
+africa <- subset(domvio, region == "Sub-Saharan Africa")
+me <- subset(domvio, region == "Middle East and Central Asia")
+tapply(asia$beat_burnfood, asia$year, mean)
+tapply(lam$beat_burnfood, lam$year, mean)
+tapply(africa$beat_burnfood, africa$year, mean)
+tapply(me$beat_burnfood, me$year, mean)
+
+lam_dvtrend <- tapply(lam$beat_burnfood, lam$year, mean, na.rm = TRUE)
+asia_dvtrend <- tapply(asia$beat_burnfood, asia$year, mean, na.rm = TRUE)
+africa_dvtrend <- tapply(africa$beat_burnfood, africa$year, mean, na.rm = TRUE)
+me_dvtrend <- tapply(me$beat_burnfood, me$year, mean, na.rm = TRUE)
+
+plot(me$year, me$beat_burnfood, type = "n", main = "Support Towards Violence Over Time", ylab = "Violence Okay", xlab = "Time")
+
+#points(lam$year, lam$beat_burnfood) + points(africa$year, africa$beat_burnfood) + points(asia$year, asia$beat_burnfood) +  
+
+points(names(lam_dvtrend), lam_dvtrend, type = "l", col = "red") + points(names(asia_dvtrend), asia_dvtrend, type = "l", col = "blue") + points(names(me_dvtrend), me_dvtrend, type = "l", col = "dark green") + points(names(africa_dvtrend), africa_dvtrend, type = "l", col = "gold")
+
+text(2003, 10, labels = "Latin America", col = "red") + text(2003, 15, labels = "Middle East", col = "green") + text(2001, 20, labels = "Africa", col = "gold") + text(2003, 5, labels = "Asia", col = "blue")
+
+
 ```
 
 
