@@ -3,6 +3,7 @@ title: "Access to Information and Attitudes towards Intimate Partner Violence"
 output:
   pdf_document: default
   html_document: default
+  word_document: default
 ---
 
 In this exercise, we examine cross-national differences in attitudes towards domestic violence and access to information. We explore the hypothesis that there is an association at an aggregate level between the extent to which individuals in a country have access to knowledge and new information, both through formal schooling and through the mass media, and their likelihood of condemning acts of intimate partner violence.  This exercise is in part based on: 
