@@ -91,50 +91,162 @@ Repeat the same analysis for the 2012 election, which was held on November 6.  H
 intresults08 <- merge(intrade08, pres08, by = "state")
 intresults08$day <- as.Date(intresults08$day)
 lastdayintrade <-subset(intresults08, subset = (day == "2008-11-03"))
-head(lastdayintrade)
-n <- length(lastdayintrade)
+n <- 51
 resultsbet <- rep(NA, n)
 for (i in 1:n) {
-  resultsbet <- lastdayintrade$PriceD - lastdayintrade$PriceR
-  lastdayintrade$resultsbet <- resultsbet[i]
-  sign(resultsbet)
-}
-sign(resultsbet)
+  resultsbet[i] <- lastdayintrade$PriceD[i] - lastdayintrade$PriceR[i]
+  lastdayintrade$resultsbet[i] <- resultsbet[i]
+  }
 
 resultspoll <- rep(NA, n)
 for (i in 1:n) {
-  resultspoll <-lastdayintrade$Obama - lastdayintrade$McCain
-  lastdayintrade$resultspoll <- resultspoll[i]
-  sign(resultspoll)
+  resultspoll[i] <-lastdayintrade$Obama[i] - lastdayintrade$McCain[i]
+  lastdayintrade$resultspoll[i]<-resultspoll[i]
 }
-sign(resultspoll)
 
-#intresults08$DaysToElection <- as.Date("2008-11-04") -   as.Date(intresults08$day)
-# make a dummy variable in the dataframe that looks to see if the results of the bet are equal to the results of the polls. If they are return 1, if not return 0
+lastdayintrade$accurate <- ifelse((sign(lastdayintrade$resultspoll) == sign(lastdayintrade$resultsbet)), 1, 0)
+mean(lastdayintrade$accurate)
+
+
+for (i in 1:n) {
+  if (lastdayintrade$accurate[i] == 0) {
+    cat(lastdayintrade$statename[i], "\n")
+  }
+}
+
 ```
 
 
 
 ```{r}
+intresults12 <- merge(intrade12, pres12, by = "state")
+intresults12$day <- as.Date(intresults12$day)
+lastdayintrade <-subset(intresults12, subset = (day == "2012-11-03"))
+n <- 50
+head(lastdayintrade)
+resultsbet <- rep(NA, n)
 
+
+for (i in 1:n) {
+  resultsbet[i] <- lastdayintrade$PriceD[i] - lastdayintrade$PriceR[i]
+  lastdayintrade$resultsbet[i] <- resultsbet[i]
+  
+  }
+
+resultspoll <- rep(NA, n)
+for (i in 1:n) {
+  resultspoll[i] <-lastdayintrade$Obama[i] - lastdayintrade$Romney[i]
+  lastdayintrade$resultspoll[i]<-resultspoll[i]
+}
+
+for (i in 1:n){
+  if (is.na(lastdayintrade$resultsbet[i]) == TRUE){
+    lastdayintrade$resultsbet[i] <- lastdayintrade$resultspoll[i]
+  }
+}
+
+lastdayintrade$accurate <- ifelse((sign(lastdayintrade$resultspoll) == sign(lastdayintrade$resultsbet)), 1, 0)
+mean(lastdayintrade$accurate)
+
+
+for (i in 1:n) {
+  if (lastdayintrade$accurate[i] == 0) {
+    cat(lastdayintrade$statename[i], "\n")
+  }
+}
 ```
 
 
 ## Question 2
 
-How do the predictions based on the betting markets change over
-  time?  Implement the same classification procedure as above on each
-  of the last 90 days of the 2008 campaign rather than just the day
-  before the election.  Plot the predicted number of electoral votes
-  for the Democratic party nominee over this 90-day period.  The
-  resulting plot should also indicate the actual election result.
-  Note that in 2008, Obama won 365 electoral votes. Briefly comment on
-  the plot.
+How do the predictions based on the betting markets change over time?  
+
+Implement the same classification procedure as above on each of the last 90 days of the 2008 campaign rather than just the day before the election.  
+
+Plot the predicted number of electoral votes for the Democratic party nominee over this 90-day period.  
+
+The resulting plot should also indicate the actual election result. 
+
+Note that in 2008, Obama won 365 electoral votes. Briefly comment on the plot.
 
 ## Answer 2
+```{r}
+year_2008 <- merge(intrade08, pres08, by = "state")
+
+year_2012 <- merge(intrade12, pres12, by = "state")
+
+
+##what you did here is you created a new data frame
+day_before_2008 <- subset(year_2008,
+                          subset = (day == "2008-11-03"))
+
+day_before_2012 <- subset(year_2012,
+                          subset = (day == "2012-11-05"))
+
+
+
+year_2008 $DaysToElection <- as.Date("2008-11-04")  -  as.Date(year_2008 $day)
+
+year_2008 $obama.intmarg <- year_2008 $PriceD  -   year_2008 $PriceR
+
+year_2008 $obama.actmarg <- year_2008 $Obama  -  year_2008 $McCain
+
+latest08 <- year_2008[year_2008 $DaysToElection == 1,]
+
+latest08$state[sign(latest08$obama.intmarg) !=  sign(latest08$obama.actmarg)]
+
+
+Obama.dailypredEV08 <- rep(NA, 90)
+
+for (i in 1:90) {
+    daily.data  <- subset(year_2008,   subset =  (DaysToElection == i))
+    Obama.dailypredEV08[i] <-  sum(daily.data$EV[daily.data$obama.intmarg > 0])
+} 
+
+
+plot(1:90, Obama.dailypredEV08,
+     main = "Daily Predicted Obama Electoral Votes",
+     xlab = "Days to Election", ylab = "Predicted Electoral Votes",
+     xlim = c(90, -1), ylim = c(260, 380))
+points(0, 365, pch = 19)
+abline(v = 0)
+abline(h = 365, lty = "dashed")
+text(80, 370, "Actual Result") 
+
+#I was working with Jacob on this and had a lot of issues with how I was thinking it should be done. Because of that, I have left my code below for you to look at.
+```
+
 
 ```{r}
+intresults08 <- merge(intrade08, pres08, by = "state")
+intresults08$day <- as.Date(intresults08$day)
+last90daysintrade <-subset(intresults08, subset = (day >= "2008-08-06" & day<"2008-11-05"))
+
+last90daysintrade$ObamaW <- ifelse((last90daysintrade$Obama) > (last90daysintrade$McCain), 1, 0)
+
+ObamaWin <- subset(last90daysintrade, subset = (ObamaW == 1))
+DayEV <- data.frame(unique(ObamaWin$day))
+
+names(DayEV)[1] <- "Days"
+
+
+DayEV$Days <- DayEV[order(DayEV$Days),]
+DayEV$EV <- NA
+n <- nrow(ObamaWin)
+y <- nrow(DayEV)
+counter = 0
+for (e in 1:y){
+  for (i in 1:n){
+    if (DayEV$Days[e] == ObamaWin$day[i]) {
+       counter <- counter+ObamaWin$EV[i]
+      
+    }
+  }
+  DayEV$EV[e] <- counter
+  counter = 0
   
+}
+DayEV
 ```
   
 
@@ -154,6 +266,28 @@ Repeat the previous exercise but this time use the seven-day
 ## Answer 3
 
 ```{r}
+
+
+rollingaverage <- data.frame(1:90)
+rollingaverage
+for (i in 1:90){
+  rollingaverage[i] <- mean(year_2008$EV)
+}
+rollingaverage
+for (i in 1:90) {
+    daily.data  <- subset(year_2008,   subset =  (DaysToElection == i))
+    Obama.dailypredEV08[i] <-  sum(daily.data$EV[daily.data$obama.intmarg > 0])
+} 
+
+
+plot(1:90, Obama.dailypredEV08,
+     main = "Daily Predicted Obama Electoral Votes",
+     xlab = "Days to Election", ylab = "Predicted Electoral Votes",
+     xlim = c(90, -1), ylim = c(260, 380))
+points(0, 365, pch = 19)
+abline(v = 0)
+abline(h = 365, lty = "dashed")
+text(80, 370, "Actual Result") 
 
 ```
 
