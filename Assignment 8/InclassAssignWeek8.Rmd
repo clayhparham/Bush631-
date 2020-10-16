@@ -1,0 +1,57 @@
+---
+title: "Untitled"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+intrade08 <- read.csv("/Users/clayparham/Documents/Bush631-/Assignment 7/intrade08.csv")
+pres08 <- read.csv("/Users/clayparham/Documents/Bush631-/Assignment 7/pres08.csv")
+polls08 <- read.csv("/Users/clayparham/Documents/Bush631-/Assignment 7/polls08.csv")
+pres12 <- read.csv("/Users/clayparham/Documents/Bush631-/Assignment 7/pres12.csv")
+intrade12 <- read.csv("/Users/clayparham/Documents/Bush631-/Assignment 7/intrade12.csv")
+```
+## Question 5
+
+What is the relationship between the price margins of the Intrade market and the actual margin of victory? 
+
+Using only the market data from the day before the election in 2008, regress Obama's actual margin of victory in each state on Obama's price margin from the Intrade markets. 
+
+Similarly, in a separate analysis, regress Obama's actual margin of victory on the Obama's predicted margin from the latest polls within each state. 
+
+Interpret the results of these regressions.
+  
+  I think it is fairly clear that the betting markets align closely with the results of the election, although it seems that they betting markets are fairly skewed towards the margins, creating a pattern that isn't exactly linear. That makes me question the usefulness of the regression without a normalizing function.
+```{r}
+intresults08 <- merge(intrade08, pres08, by = "state")
+LastDay <-subset(intresults08, subset = (day == "2008-11-03"))
+for (i in 1:51){
+  LastDay$margin[i] <- LastDay$Obama[i] - LastDay$McCain[i]
+  LastDay$marginbet[i] <- LastDay$PriceD[i] - LastDay$PriceR[i]
+}
+
+lm(marginbet ~ margin, data = LastDay)
+plot(LastDay$margin, LastDay$marginbet, abline(lm(LastDay$marginbet ~ LastDay$margin)))
+```
+Do the 2008 predictions of polls and Intrade accurately predict each state's 2012 elections results?  Using the fitted regressions from the previous question, forecast Obama's actual margin of victory for the 2012 election in two ways.  First, use the 2012 Intrade price margins from the day before the election as the predictor in each state.  Recall that the 2012 Intrade data do not contain market prices for all states. Ignore states without data. Second, use the 2012 poll predicted margins from the latest polls in each state as the predictor, found in `polls12.csv`.
+
+## Question 6
+We see that there is a very strong correlation between the betting markets in 2012 and the results in 2012. This shows me that there is a high degree of correlation between what the market believes and what the results show. That means that one can probably safely use the betting markets as a predictor.
+```{r}
+intresults12<- merge(intrade12, pres12, by = "state")
+LastDay.12 <-subset(intresults12, subset = (day == "2012-11-05"))
+LastDay.12
+
+for (i in 1:50){
+  LastDay.12$margin[i] <- LastDay.12$Obama[i] - LastDay.12$Romney[i]
+  LastDay.12$marginbet[i] <- LastDay.12$PriceD[i] - LastDay.12$PriceR[i]
+
+}
+lm(marginbet~margin, data = LastDay.12)
+
+plot(LastDay.12$margin, LastDay.12$marginbet, abline(lm(LastDay.12$marginbet ~ LastDay.12$margin)))
+
+
+```
+
