@@ -1,6 +1,8 @@
 ---
 title: "Filedrawer and Publication Bias in Academic Research"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 The peer review process is the main mechanism through which scientific
@@ -125,6 +127,25 @@ Using Monte Carlo simulations, derive the distribution of the
   attain similar p-values (for a two-tailed test) to those obtained in
   the previous question?
   
+There were similar means and similar p-values to what we found above for everything but the strong files. That might show that there is some validity to what the data found.
+```{r}
+sample.strong <- sample(filedrawer$strong, size = 20000, replace = TRUE)
+sample.weak <- sample(filedrawer$weak, size = 20000, replace = TRUE)
+sample.null <- sample(filedrawer$null, size = 20000, replace = TRUE)
+prop.table(table(sample.strong))
+prop.table(table(sample.weak))
+prop.table(table(sample.null))
+
+mean(sample.strong)
+mean(sample.weak)
+mean(sample.null)
+
+t.test(filedrawer$published, sample.null)
+t.test(filedrawer$published, sample.strong)
+t.test(filedrawer$published, sample.weak)
+
+
+```
 ## Question 4
 
 Conduct the following power analysis for a one-sided hypothesis
