@@ -132,13 +132,7 @@ lm(data = yu2017sample, logwage ~ numChildren + experience + competitiveness + t
 
 ## Question 3
 
-Run a two-way fixed effects (2FE) regression (linear regression with unit and time fixed effects) where the outcome
-is the log wage and the predictor is the number of children that
-a woman has. Include fixed effects for each *woman* and each *year*
-(i.e., include factorized variables for `year` and `PUBID` in the 
-regression model). What is the estimated coefficient on the variable
-`numChildren`? Provide a brief substantive interpretation of the 
-coefficient.
+Run a two-way fixed effects (2FE) regression (linear regression with unit and time fixed effects) where the outcome is the log wage and the predictor is the number of children that a woman has. Include fixed effects for each *woman* and each *year* (i.e., include factorized variables for `year` and `PUBID` in the  regression model). What is the estimated coefficient on the variable `numChildren`? Provide a brief substantive interpretation of the coefficient.
 
 ## Answer 3
 
